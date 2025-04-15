@@ -1,6 +1,6 @@
 # Races App
 
-## Created with React Native, typescript, redux, redux-thunk, redux-toolkit
+> Created with React Native, typescript, redux, redux-thunk, redux-toolkit
 
 # Getting Started
 
