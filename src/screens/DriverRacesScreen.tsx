@@ -5,6 +5,7 @@ import {
   FlatList,
   ActivityIndicator,
   StyleSheet,
+  ScrollView,
 } from 'react-native';
 import {useAppDispatch, useAppSelector} from '../hooks/redux';
 import {loadDriverRaces} from '../redux/driversSlice';
@@ -33,53 +34,45 @@ export const DriverRacesScreen: React.FC<DriverRacesScreenProps> = ({
     const result = item.Results?.[0];
 
     return (
-      <View style={styles.card}>
-        <Text style={styles.raceName}>{item.raceName}</Text>
-        <Text style={styles.raceLocation}>
-          Location: {item.Circuit.Location.country},{' '}
-          {item.Circuit.Location.locality}
-        </Text>
-        <Text style={styles.track}>
-          {item.Circuit.circuitName} — {item.date}
-        </Text>
-        {result ? (
-          <View style={styles.resultContainer}>
-            <Text style={styles.resultText}>
-              Position: <Text style={styles.bold}>{result.position}</Text>
-            </Text>
-            <Text style={styles.resultText}>
-              Status: <Text style={styles.bold}>{result.status}</Text>
-            </Text>
-            <Text style={styles.resultText}>
-              Points: <Text style={styles.bold}>{result.points}</Text>
-            </Text>
-            <Text style={styles.resultText}>
-              Position text:{' '}
-              <Text style={styles.bold}>{result.positionText}</Text>
-            </Text>
-            <Text style={styles.resultText}>
-              Number: <Text style={styles.bold}>{result.number}</Text>
-            </Text>
-          </View>
-        ) : (
-          <Text style={styles.noResult}>No result data</Text>
-        )}
+      <View style={styles.row}>
+        <Text style={[styles.cell]}>{item.season}</Text>
+        <Text style={styles.cell}>{item.raceName}</Text>
+        <Text style={styles.cell}>{item.Circuit.circuitName}</Text>
+        <Text style={styles.cell}>{item.date}</Text>
+        <Text style={styles.cell}>{result?.position || '-'}</Text>
+        <Text style={styles.cell}>{result?.Constructor.name || '-'}</Text>
       </View>
     );
   };
+    if (loading) {
+      return (
+        <View style={styles.container}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      );
+    }
 
   return (
     <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator size="large" color="#007AFF" />
-      ) : (
-        <FlatList
-          data={races}
-          keyExtractor={item => item.round + item.season + item.date}
-          renderItem={renderRace}
-          contentContainerStyle={styles.listContent}
-        />
-      )}
+      <Text style={styles.title}>Race Results</Text>
+      <ScrollView horizontal style={styles.scrollContainer}>
+        <View style={styles.table}>
+          <View style={[styles.row, styles.header]}>
+            <Text style={[styles.cell, styles.headerCell]}>Season</Text>
+            <Text style={[styles.cell, styles.headerCell]}>Race</Text>
+            <Text style={[styles.cell, styles.headerCell]}>Circuit</Text>
+            <Text style={[styles.cell, styles.headerCell]}>Date</Text>
+            <Text style={[styles.cell, styles.headerCell]}>Position</Text>
+            <Text style={[styles.cell, styles.headerCell]}>Constructor</Text>
+          </View>
+          <FlatList
+            data={races}
+            keyExtractor={item => item.round + item.season + item.date}
+            renderItem={renderRace}
+            contentContainerStyle={styles.listContent}
+          />
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -87,54 +80,47 @@ export const DriverRacesScreen: React.FC<DriverRacesScreenProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#F9F9F9',
+    paddingVertical: 12,
+    paddingHorizontal: 4,
+    backgroundColor: '#fff',
+  },
+  table: {
+    minWidth: 420,
+    overflow: 'scroll',
+  },
+  scrollContainer: {
+    flex: 1,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    marginLeft: 8,
   },
   listContent: {
     paddingBottom: 20,
   },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: {width: 0, height: 2},
-    shadowRadius: 4,
-    elevation: 3,
+  row: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
   },
-  raceName: {
-    fontSize: 18,
+  cell: {
+    flex: 1,
+    padding: 6,
+    fontSize: 12,
+    borderRightWidth: 1,
+    borderColor: '#ccc',
+    width: 85,
+  },
+  header: {
+    backgroundColor: '#f0f0f0',
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+  },
+  headerCell: {
     fontWeight: 'bold',
-    marginBottom: 4,
-    color: '#333',
-  },
-  raceLocation: {
-    fontSize: 16,
-    fontWeight: '400',
-    marginBottom: 0,
-    color: '#333',
-  },
-  track: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 8,
-  },
-  resultContainer: {
-    marginTop: 8,
-  },
-  resultText: {
-    fontSize: 14,
-    color: '#444',
-    marginBottom: 2,
-  },
-  noResult: {
-    fontStyle: 'italic',
-    color: '#999',
-  },
-  bold: {
-    fontWeight: '600',
-    color: '#000',
+    marginVertical: 'auto',
   },
 });
