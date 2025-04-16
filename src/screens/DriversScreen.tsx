@@ -8,7 +8,7 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
-import {useAppDispatch, useAppSelector} from '../hooks/hooks';
+import {useAppDispatch, useAppSelector} from '../hooks/redux';
 import {loadDrivers, setPage} from '../redux/driversSlice';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useNavigation} from '@react-navigation/native';
@@ -43,13 +43,14 @@ export const DriversScreen: React.FC = () => {
   const renderItem = ({item}: {item: Driver}) => (
     <TouchableOpacity
       onPress={() =>
+        /* navigating with the params transfer driver ID */
         navigation.navigate('DriverDetails', {driverId: item.driverId})
-      }
-      style={styles.driverItem}>
-      <Text
-        style={
-          styles.driverName
-        }>{`${item.givenName} ${item.familyName}`}</Text>
+      }>
+      <View style={styles.tableRow}>
+        <Text style={styles.cell}>{item.givenName}</Text>
+        <Text style={styles.cell}>{item.familyName}</Text>
+        <Text style={styles.cell}>{item.nationality}</Text>
+      </View>
     </TouchableOpacity>
   );
 
@@ -62,6 +63,11 @@ export const DriversScreen: React.FC = () => {
   }
   return (
     <View style={styles.container}>
+      <View style={styles.tableHeader}>
+        <Text style={styles.headerCell}>Name</Text>
+        <Text style={styles.headerCell}>Surname</Text>
+        <Text style={styles.headerCell}>Nationality</Text>
+      </View>
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
@@ -92,12 +98,26 @@ export const DriversScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {flex: 1, padding: 16},
   listContent: {paddingBottom: 20},
-  driverItem: {
-    paddingVertical: 12,
+  tableHeader: {
+    flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: '#ccc',
+    paddingBottom: 6,
+    marginBottom: 4,
   },
-  driverName: {fontSize: 16},
+  tableRow: {
+    flexDirection: 'row',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  headerCell: {
+    flex: 1,
+    fontWeight: 'bold',
+  },
+  cell: {
+    flex: 1,
+  },
   pagination: {
     flexDirection: 'row',
     justifyContent: 'space-between',

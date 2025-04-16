@@ -10,14 +10,6 @@ export interface Driver {
   nationality: string;
 }
 
-export interface DriverStanding {
-  position: string;
-  points: string;
-  wins: string;
-  Driver: Driver;
-  Constructors: Constructor[];
-}
-
 export interface Constructor {
   constructorId: string;
   name: string;

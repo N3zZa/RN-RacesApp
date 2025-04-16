@@ -8,12 +8,21 @@ import {RootStackParamList} from '../types/navigation';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+// 3 pages: Drivers, Driver details, Driver races
 export const AppNavigator = () => (
   <NavigationContainer>
     <Stack.Navigator>
       <Stack.Screen name="Drivers" component={DriversScreen} />
-      <Stack.Screen name="DriverDetails" component={DriverDetailsScreen} />
-      <Stack.Screen name="DriverRaces" component={DriverRacesScreen} />
+      <Stack.Screen
+        options={{title: 'Driver details'}}
+        name="DriverDetails"
+        component={DriverDetailsScreen}
+      />
+      <Stack.Screen
+        options={{title: 'Driver races'}}
+        name="DriverRaces"
+        component={DriverRacesScreen}
+      />
     </Stack.Navigator>
   </NavigationContainer>
 );

@@ -7,6 +7,8 @@ import {
 import {Driver} from '../types/driver';
 import {Race} from '../types/race';
 
+
+/* interface for initialState of the slice */
 interface DriversState {
   list: Driver[];
   total: number;
@@ -17,6 +19,7 @@ interface DriversState {
   error: string | null;
 }
 
+/* initialState of driverSlice */
 const initialState: DriversState = {
   list: [],
   total: 0,
@@ -27,6 +30,7 @@ const initialState: DriversState = {
   races: [],
 };
 
+/* function that load drivets on the main page(drivers page) */
 export const loadDrivers = createAsyncThunk(
   'drivers/loadDrivers',
   async (page: number) => {
@@ -39,34 +43,30 @@ export const loadDrivers = createAsyncThunk(
   },
 );
 
+/* function that load driver details */
 export const loadDriverDetails = createAsyncThunk(
   'drivers/loadDriverDetails',
   fetchDriverDetails,
 );
+/* function that load races of the driver */
 export const loadDriverRaces = createAsyncThunk(
   'drivers/loadDriverRaces',
   fetchDriverRaces,
 );
 
+/* redux slice */
 export const driversSlice = createSlice({
   name: 'drivers',
   initialState,
   reducers: {
-    setLoading(state, action: PayloadAction<boolean>) {
-      state.loading = action.payload;
-    },
-    setSelectedDriver(state, action: PayloadAction<Driver | null>) {
-      state.selectedDriver = action.payload;
-    },
-    setRaces(state, action: PayloadAction<Race[]>) {
-      state.races = action.payload;
-    },
+    /* reducer which changes the page depending on the transmitted page */
     setPage(state, action: PayloadAction<number>) {
       state.currentPage = action.payload;
     },
   },
   extraReducers: builder => {
     builder
+      /* loadDrivers async processing */
       .addCase(loadDrivers.pending, state => {
         state.loading = true;
       })
@@ -79,20 +79,17 @@ export const driversSlice = createSlice({
         state.error = 'Error getting drivers';
         state.loading = false;
       })
-      /*  */
+      /* loadDriverDetails async processing*/
       .addCase(loadDriverDetails.pending, state => {
-        state.loading = true;
         state.selectedDriver = null;
       })
       .addCase(loadDriverDetails.fulfilled, (state, action) => {
         state.selectedDriver = action.payload;
-        state.loading = false;
       })
       .addCase(loadDriverDetails.rejected, state => {
         state.error = 'Error getting details data';
-        state.loading = false;
       })
-      /*  */
+      /* loadDriverRaces async processing */
       .addCase(loadDriverRaces.pending, state => {
         state.loading = true;
         state.races = [];
@@ -108,7 +105,7 @@ export const driversSlice = createSlice({
   },
 });
 
-export const {setLoading, setSelectedDriver, setRaces, setPage} =
+export const {setPage} =
   driversSlice.actions;
 
 export const driversReducer = driversSlice.reducer;
